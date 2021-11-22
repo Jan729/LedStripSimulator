@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="Adafruit_NeoPixel.css">
+    <script src="Adafruit_NeoPixel.js"></script>
+
+    <script>
+        //USER
+        var NUM_PINS = 32
+        var NUM_LEDS = 32
+        var BRIGHTNESS = 255
+
+        //ws2812b, arduino pro mini
+        // stores all the led strip colour data
+        var ledMatrix = []
+
+        //vars for the basic animation only
+        //make these global somehow and cut down on redundant copies
+        var red = new Array(NUM_PINS)
+        var yellow = new Array(NUM_PINS)
+        var blue = new Array(NUM_PINS)
+        var colors = [red, yellow, blue]
+        var currentColorIndex = new Array(NUM_PINS)
+        var NUM_COLOURS = 3
+
+        //initialize variables
+        for (let i = 0; i < NUM_PINS; i++) {
+            ledMatrix[i] = new Adafruit_NeoPixel(NUM_LEDS, i, NEO_GRB + NEO_KHZ800)
+
+            red[i] = ledMatrix[i].Color(255, 0, 0)
+            yellow[i] = ledMatrix[i].Color(255, 255, 0)
+            blue[i] = ledMatrix[i].Color(0, 0, 255)
+            currentColorIndex[i] = 0
+        }
+
+        function setup() {
+            for (const strip of ledMatrix) {
+                strip.setBrightness(BRIGHTNESS)
+                strip.begin()
+                strip.show()
+            }
+        }
+
+        function loop() {
+            colorWipeMatrix()
+        }
+
+        function colorWipeMatrix() {
+            for (let i = 0; i < NUM_PINS; i++) {
+                var animationDone = false
+                while (!animationDone) {
+                    var animationDone = colorWipe(colors[currentColorIndex[i]][i], i)
+                    if (animationDone)
+                        currentColorIndex[i] = (currentColorIndex[i] >= NUM_COLOURS - 1 ? 0 : currentColorIndex[i] + 1)
+                }
+            }
+        }
+
+        function colorWipe(color, index) {
+            var now = millis()
+            if (now > colorWipe.lastUpdate + colorWipe.delay) {
+                ledMatrix[index].setPixelColor(colorWipe.currentLed, color)
+                ledMatrix[index].show()
+                colorWipe.currentLed = colorWipe.currentLed >= ledMatrix[index].numPixels() - 1 ? 0 : colorWipe.currentLed + 1
+                colorWipe.lastUpdate = now
+
+                if (colorWipe.currentLed === 0)
+                    return true;
+            }
+            return false
+        } //c++-like static variables for this fucntion:
+        colorWipe.delay = 10
+        colorWipe.lastUpdate = 0
+        colorWipe.currentLed = 0
+    </script>
+
+</head>
+
+<body>
+    <div class="ledStrip" data-pin="0"></div>
+    <div class="ledStrip" data-pin="1"></div>
+    <div class="ledStrip" data-pin="2"></div>
+    <div class="ledStrip" data-pin="3"></div>
+    <div class="ledStrip" data-pin="4"></div>
+    <div class="ledStrip" data-pin="5"></div>
+    <div class="ledStrip" data-pin="6"></div>
+    <div class="ledStrip" data-pin="7"></div>
+    <div class="ledStrip" data-pin="8"></div>
+    <div class="ledStrip" data-pin="9"></div>
+    <div class="ledStrip" data-pin="10"></div>
+    <div class="ledStrip" data-pin="11"></div>
+    <div class="ledStrip" data-pin="12"></div>
+    <div class="ledStrip" data-pin="13"></div>
+    <div class="ledStrip" data-pin="14"></div>
+    <div class="ledStrip" data-pin="15"></div>
+    <div class="ledStrip" data-pin="16"></div>
+    <div class="ledStrip" data-pin="17"></div>
+    <div class="ledStrip" data-pin="18"></div>
+    <div class="ledStrip" data-pin="19"></div>
+    <div class="ledStrip" data-pin="20"></div>
+    <div class="ledStrip" data-pin="21"></div>
+    <div class="ledStrip" data-pin="22"></div>
+    <div class="ledStrip" data-pin="23"></div>
+    <div class="ledStrip" data-pin="24"></div>
+    <div class="ledStrip" data-pin="25"></div>
+    <div class="ledStrip" data-pin="26"></div>
+    <div class="ledStrip" data-pin="27"></div>
+    <div class="ledStrip" data-pin="28"></div>
+    <div class="ledStrip" data-pin="29"></div>
+    <div class="ledStrip" data-pin="30"></div>
+    <div class="ledStrip" data-pin="31"></div>
+
+    <div class="editor"></div>
+</body>
+
+</html>
